@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, TabBar, Tabs, SearchBar, WingBlank, WhiteSpace, Carousel, NoticeBar } from 'antd-mobile'
-import axios from '../http';
+import { Tag, Grid, TabBar, Tabs, SearchBar, WingBlank, WhiteSpace, Carousel, NoticeBar, Card } from 'antd-mobile'
+import axios from '../http'
 import './css/home.css'
 
 class Home extends Component {
@@ -8,15 +8,25 @@ class Home extends Component {
     data: ['1', '2', '3'],
     imgHeight: 176,
     menu: [],
-    title: []
+    title: [],
+    house: []
   }
-  Title = async() => {
+
+  Title = async () => {
     const { data, meta: { status, msg } } = await axios.post('homes/info')
-    console.log(data.list,status,msg);
+    console.log(data.list, status, msg);
     this.setState({
-      title:data.list
+      title: data.list
     })
     console.log(this.state.title);
+  }
+
+  House = async () => {
+    const { data, meta: { status, msg } } = await axios.post('homes/house')
+    console.log(data, status, msg)
+    this.setState({
+      house: data.list
+    })
   }
 
   componentDidMount() {
@@ -31,6 +41,7 @@ class Home extends Component {
       console.log(this.state.menu);
     }, 0)
     this.Title()
+    this.House()
   }
 
   render() {
@@ -47,17 +58,41 @@ class Home extends Component {
     ))
 
     const Tit = () => {
-      return this.state.title.map((item,i)=>{
+      return this.state.title.map((item, i) => {
         return (
-          <div>
+          <div key={i}>
             <WhiteSpace size="lg" />
             <NoticeBar marqueeProps={{ loop: true, style: { padding: '0 7.5px' } }}>
-              {item.info_title}
+              {item.info_title}这些房子都是假的
             </NoticeBar>
           </div>
         )
       }
-    )}
+      )
+    }
+
+    const Hou = () => {
+      return this.state.house.map((item, i) => {
+        return (
+          <div key={i}>
+            <WingBlank size="lg">
+              <WhiteSpace size="lg" />
+              <Card>
+                <Card.Header
+                  thumb={`http://47.96.21.88:8086/public/home.png`}
+                  extra={<div>
+                        <Tag selected data-seed="logId">{item.home_name}</Tag>
+                        <Tag selected data-seed="logId">{item.home_desc}</Tag>
+                        <Tag selected data-seed="logId">{item.home_tags}</Tag> </div>}
+                />
+              </Card>
+              <WhiteSpace size="lg" />
+            </WingBlank>
+          </div>
+        )
+      })
+    }
+
     return (
       <TabBar>
         <Tabs tabs={tabs2}
@@ -95,6 +130,8 @@ class Home extends Component {
             </WingBlank>
             <Grid data={data} activeStyle={false} />
             <Tit />
+            <Hou />
+            <div style={ {width : '100%',height : '44px'} }></div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '150px', backgroundColor: '#fff' }}>
             Content of second tab
