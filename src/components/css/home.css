@@ -1,0 +1,12 @@
+.am-tab-bar-bar{
+  display: none
+}
+.am-search {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+.am-tabs-tab-bar-wrap{
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+}
